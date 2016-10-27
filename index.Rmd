@@ -1,0 +1,88 @@
+---
+title: "Atelier ChIP-seq - EBA_2016"
+output:
+  html_document:
+    fig_caption: yes
+    highlight: zenburn
+    toc: yes
+    toc_depth: 3
+    theme: united
+---
+
+
+
+### Contexte
+
+Cet atelier ChIP-Seq a lieu dans le cadre de [l'Ecole de bioinformatique AVIESAN 2016, Station Biologique,
+Roscoff](http://ecole-bioinfo-aviesan.sb-roscoff.fr/).
+
+[![AVIESAN](html/img/aviesan_logo_0.png)](http://www.aviesan.fr/)
+
+
+### Contenu
+
+-   [Home](index.html)
+-   [Session1: Peak calling](tutorial/01_peak_calling/peak_calling_tutorial.html)
+-   [Session2: Annotation Fonctionelle](tutorial/02_annotation/annotation.html)
+-   [Session3: Analyse de motifs](tutorial/04_motif/motif_tutorial.html)
+
+
+### Formateurs
+
+1. [Stéphanie Le Gras](http://ibios.dkfz.de/tbi/index.php/cancer-regulatory-genomics/research)
+2. [Matthieu Defrance](http://www.bigre.ulb.ac.be/Users/defrance/)
+3. [Denis Puthier](http://tagc.univ-mrs.fr/tagc/index.php/research/network-bioinformatics/dputhier)
+4. [Morgane Thomas-Chollier](mailto:mthomas@biologie.ens.fr)
+5. [Jacques van Helden](http://jacques.van-helden.perso.luminy.univ-amu.fr/)
+
+
+- (1). [Institut de Génétique et de Biologie Moléculaire](http://www.igbmc.fr/) (IGBMC). 
+    - IGBMC, 1 rue Laurent Fries BP 10142 67404 Illkirch CEDEX.
+- (2). [Laboratory of cancer epigenetics](http://www.ulb.ac.be//medecine/fukslab/). 
+    - Université; Libre de Bruxelles, Faculté de Médecine CP614. Route de Lennik, 808. 1070 Bruxelles, Belgium
+- (3,5). [Lab. Technological Advances for Genomics and Clinics](http://tagc.univ-mrs.fr/tagc/) (TAGC).
+    - Aix-Marseille Université (AMU), INSERM Unit U1090, 163, Avenue de Luminy, 13288 MARSEILLE cedex 09. France
+- (4). [CSB group, Institut de Biologie de l'École Normale Supérieure Institut de Biologie](http://www.biologie.ens.fr/csb/)
+    - École Normale Supérieure, 46 rue d'Ulm F-75230 Paris cedex 05 . France
+    
+<!--
+2.  Cancer Regulatory Genomics group, Division of Theoretical
+    Bioinformatics, DKFZ and IPMB, Universität Heidelberg,  
+    Web:
+    [website](http://ibios.dkfz.de/tbi/index.php/cancer-regulatory-genomics/research)  
+    Build. TP3 - DKFZ Heidelberg (B080) Im Neuenheimer Feld 580
+    D-69120 Heidelberg.
+-->
+
+
+
+### Jeux de données
+
+-   Theodorou V, Stark R, Menon S, Carroll JS *GATA3 acts upstream of
+    FOXA1 in mediating ESR1 binding by shaping enhancer accessibility.*
+    Genome Research, 23(1):12-22. 2013. [Pubmed](http://www.ncbi.nlm.nih.gov/pubmed/23172872), [Article](http://genome.cshlp.org/content/23/1/12.long)
+- Données et accession: [Liste complète](html/datasets.html)  
+
+### Liste des outils
+
+-   [Samtools](http://samtools.sourceforge.net/)
+-   [DeepTools](https://github.com/fidelram/deepTools)
+-   [IGV](http://www.broadinstitute.org/igv/)
+-   [MACS](http://liulab.dfci.harvard.edu/MACS/)
+-   [MACS2](https://github.com/taoliu/MACS/)
+-   [IntersectBed (bedtools)](http://bedtools.readthedocs.org/en/latest/content/tools/intersect.html)
+-   [diffBind](http://www.bioconductor.org/packages/release/bioc/html/DiffBind.html)
+-   [UCSC Genome Browser](https://genome.ucsc.edu/)
+-   [RSAT (Roscoff)](http://roscoff.rsat.fr)
+-   [RSAT (Marseille)](http://139.124.66.4/rsat/)
+-   [ReMAP](http://tagc.univ-mrs.fr/remap/)
+-   [Nebula makeTSSDist,AnnotatePeaks](http://nebula.curie.fr/)
+-   [GREAT](http://great.stanford.edu)
+-   [PeakSplitter](http://www.ebi.ac.uk/research/bertone/software)
+
+
+
+
+ 
+
+
