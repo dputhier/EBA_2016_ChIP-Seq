@@ -1,0 +1,560 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+	<meta name="description" content=""/>
+	<meta name="keywords" content="" />
+	<meta name="author" content="carl" />
+	<title>Workshop: ChIP-Seq Data Analysis</title>
+	<link rel="stylesheet" type="text/css" href="../../html/style.css" media="screen" />
+<style type="text/css">
+
+#wrapper{
+  margin:0 auto;
+  #padding:15px 15% 8em;
+  text-align:left
+}
+#content {
+  max-width:70em;
+  width:100%;
+  margin:0 auto;
+  padding-bottom:20px;
+  overflow:hidden
+}
+.demo {
+  margin:1.5em 0;
+  padding:1.5em 1.5em 0.75em;
+  border:1px solid #ccc;
+  position:relative;
+  overflow:hidden
+}
+
+.post {
+  position:relative;
+  overflow:hidden
+}
+.collapse p {padding:0 10px 1em}
+
+.switch {position:absolute; top:1.5em; right: 1.5em; padding:3px}
+
+#.post .switch {position:static; text-align:right}
+
+.post .main{margin-bottom:0; padding-bottom:0}
+
+.other li, .summary {margin-bottom:.3em; padding:1em; border:1px solid #e8e7e8; background-color:#f8f7f8}
+
+.other ul {list-style-type:none; text-align:center}
+
+
+.expand{padding-bottom:.75em}
+
+/* --- Links  --- */
+
+#download {
+  border-style:none;
+  background:white;
+}
+
+.expand a {
+  display:block;
+  padding:3px 10px
+}
+.expand a:link, .expand a:visited {
+  border-width:1px;
+  background-image:url(img/arrow-down.gif);
+  background-repeat:no-repeat;
+  background-position:98% 50%;
+}
+.expand a:hover, .expand a:active, .expand a:focus {
+}
+.expand a.open:link, .expand a.open:visited {
+  #border-style:solid;
+  #background:#eee url(img/arrow-up.gif) no-repeat 98% 50%
+  color:black;
+}
+</style>
+<!--[if lte IE 6]>
+<style type="text/css">
+h3 a, .demo {position:relative; height:1%}
+</style>
+<![endif]-->
+
+<!--[if lte IE 6]>
+<script type="text/javascript">
+   try { document.execCommand( "BackgroundImageCache", false, true); } catch(e) {};
+</script>
+<![endif]-->
+<!--[if !lt IE 6]><!-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="../../html/scripts/expand.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+$(function() {
+    $("#content h3.expand").toggler();
+    $("#content h2.expand").toggler();
+    $("#content div.demo").expandAll({trigger: "h3.expand", ref: "h3.expand"});
+    $("#content div.other").expandAll({
+      expTxt : "[Show]", 
+      cllpsTxt : "[Hide]",
+      ref : "ul.collapse",
+      showMethod : "show",
+      hideMethod : "hide"
+    });
+    $("#content div.post").expandAll({
+      expTxt : "[Show tip]", 
+      cllpsTxt : "[Hide tip]",
+      ref : "div.collapse", 
+      localLinks: "p.top a"    
+    });    
+});
+//--><!]]>
+</script>
+<!--<![endif]-->
+
+
+    <script type="text/javascript" src="syntaxhighlight/shCore.js"></script>
+    <script type="text/javascript" src="syntaxhighlight/shBrushBash.js"></script>
+    <script type="text/javascript" src="syntaxhighlight/shBrushR.js"></script>
+    <link type="text/css" rel="stylesheet" href="syntaxhighlight/shCore.css"/>
+    <link type="text/css" rel="stylesheet" href="syntaxhighlight/shThemeDefault.css"/>
+    
+    <script type="text/javascript">
+      SyntaxHighlighter.config.clipboardSwf = 'syntaxhighlight/clipboard.swf';
+      SyntaxHighlighter.all();
+      
+    </script>
+
+</head>
+
+<body>
+
+<div id="site-wrapper">
+
+	<div id="header">
+
+		<div id="top">
+
+			<div class="left" id="logo">
+				<a href="#"><h2 class="label label-green">Workshop: ChIP-Seq Data Analysis</h2></a>
+			</div>
+
+
+
+			<div class="clearer">&nbsp;</div>
+
+		</div>
+
+		<div class="navigation" id="sub-nav">
+
+			<ul class="tabbed">
+				<li ><a href="../../index.html">Home</a></li>
+				<li ><a href="../../tutorial/01_peak_calling/peak_calling_tutorial.html">Session1:Peak calling</a></li>
+				<li><a href="../../tutorial/02_annotation/TP-ChIP-seq-Annotation.pdf">Session2:Annotation Fonctionelle</a></li>
+				<li class="current-tab"><a href="../../tutorial/04_motif/motif_tutorial.html">Session3: Analyse de motifs</a></li>
+			</ul>
+
+			<div class="clearer">&nbsp;</div>
+
+		</div>
+
+	</div>
+
+	<div class="main" id="main-two-columns">
+
+		<div class="left" id="main-content">
+
+			<h2 id="contents"> Introduction </h2>
+			<b>Goal</b><br/>
+
+<u>The aim is to :</u>
+<ul>
+<li> Get familiar with motif analysis of ChIP-seq data.</li>
+<li> Learn de novo motif discovery methods.</li>
+</ul>
+
+<u>In practice :</u>
+<ul>
+<li> Motif discovery with <i>peak-motifs</i></li>
+<li> Differential analysis</li>
+<li> Random controls</li>
+</ul>
+
+
+<div id="wrapper"> 
+  <div id="content"> 
+    
+    <!-- SEQUENCES -->	 
+    <div class="demo">
+      <h2 id="download" class="expand">Retrieving sequences from your peaks</h2>
+      <div class="collapse">
+        <div class="notice">
+	  <b>Goal:</b> Given a set of peaks from a ChIP-seq experiment in a  <a href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1" target='_blank'>bed format</a>, retrieve the sequences corresponding to those coordinates from the genome in fasta format.
+	  <br/>
+	</div>
+        
+	<h3 class="expand">1 - Peak dataset: ER factor in human MCF7 cells </h3>
+	<div class="collapse">
+
+          <p>Theodorou et al published a ChIP-seq
+          experiment in the MCF7 cell line (breast cancer) to identify genomic locations bound by
+          the transcription factor
+          Estrogen receptor alpha (ESR1)<a href="http://genome.cshlp.org/content/23/1/12.long"
+          target='_blank'>(PMID:23172872)</a>. The particularity of this system is that it is inducible
+          with the E2 (oestradiol) hormone. The authors were interested in evaluating the role of another transcription factor (GATA3)
+          They thus performed the following experiments (with E2 induction):
+          <ul>
+          <li> inhibiting the GATA3 factor by small interference RNA (files with prefix siGATA in the Table below)</li>
+ 		  <li> control  (files with prefix siNT)</li>
+ 		  </ul>
+ 		  <a href="../../html/datasets.html">List of all datasets published in this work</a>.
+
+		Peak regions were obtained by running the peak calling program MACS on the aligned reads (as in the previous session). The multi-peak regions were further split into individual peaks using the <a href="http://www.ebi.ac.uk/research/bertone/software" target="_blank">PeakSplitter</a> tool.
+	  We then selected only the chromosome 7 for the sake of time during the practical. 
+	  
+	  <br/><br/>
+	  <b>Description of the peaks on chr7</b>:
+	  
+	  <table>
+	   <tr>
+	  <th>Peak BED file</th>
+	  <th>Number of peaks</th>
+	  <th>Sum of peak sizes (bp)</th>
+	  </tr>
+	  
+	  <tr>
+	  <td><a href="../../data/siGATA_ER_E2_r3_MACS_PeakSplitter.bed">siGATA_ER_E2_r3_MACS_PeakSplitter.bed</a></td>
+	  <td>7.041</td>
+	  <td>1.476.646</td>
+	  </tr>
+	  
+	  <tr>
+	  <td><a href="../../data/siNT_ER_E2_r3_MACS_PeakSplitter.bed">siNT_ER_E2_r3_MACS_PeakSplitter.bed </a></td>
+	  <td>6.991</td>
+	  <td>1.801.622</td>
+	  </tr>
+
+	  </table>
+	
+        </div>
+        
+	<h3 class="expand">2 - Fetch sequences from a bed file </h3>
+	<div class="collapse">
+          <ol>
+	    <li>In a web browser window open the <a href="http://rsat.sb-roscoff.fr/" target="_blank">RSAT (Roscoff)</a> or <a href="http://rsat.fr/" target="_blank"> RSAT (Marseille)</a> web page</li>
+	    <li>In the menu (left side) click on the <b>NGS-ChIP-seq</b> drop down menu, and select the tool: <b>fetch-sequences from UCSC</b>.</li>
+	    <li>Select the genome of interest, in this case: human, assembly <b>hg19</b>.</li>
+		<div class="error"><b>Select the correct genome version:</b> New genome assemblies are constantly updated with new annotations and sequences.  Always verify you are selecting the correct version, corresponding to the coordinates (choice of assembly was made during the read mapping step).
+	  </div>
+
+	    <li>Genomic coordinates can be provided in 3 alternative ways:
+	    <ul><li>Paste the content of the BED file, (not very convenient for large peak sets).</li>
+		<li>Specify a URL. This option is generally suitable for importing peaks from a Galaxy server or any other Web site.</li>
+		<li>Upload a file from your computer.</li>
+		</ul>
+ In this case, to prevent traffic between the teaching room and internet, 
+	      we will favor using the URL option. Right click on the first link in the table above (dataset <b>siGATA_ER_E2_r3_MACS_PeakSplitter.bed</b>) and "copy link location" to get the URL of the peak coordinates (BED) file. Paste it the the box. </li>	    
+	    
+	    <img class="bordered" src="images/1_fetch_seq.png" alt="1_fetch_seq.png" width="550"/>
+	    <br/>
+	    <li>Leave all other parameters unchanged and click on the button “GO”. </li>
+		
+		  <div class="post">
+   				<div class="success"> What is the result of this <b>fetch-sequences</b> tool ?<br/>
+                </div>
+            	<div class="collapse"> 
+            	<img class="bordered" src="images/2_fetch_seq_result.png" alt="2_fetch_seq_result" width="550"/>
+            	<br/>
+            	The program returns 3 links to files : the input BED file (coordinates), the corresponding sequences (FASTA file), and a log text file that contain information on the execution of the program.
+                </div>
+   				</div>
+        <li>click on the link of the log file, and look for the number of sequences retrieved. </li> 
+         <div class="post">
+   				<div class="success"> Always check that you retrieved all sequences.<br/>
+                </div>
+            	<div class="collapse"> 
+            	According to the table above, the coordinate BED file contain 7.041 regions. The log file has this line :
+            	<pre>; sequences           	7041 </pre>
+            	All sequences were retrieved.
+                </div>
+   				</div>
+	    <li>The FASTA file contain the sequences. Download it (right click, save as...) on your computer to keep a copy of them.</li>
+	  </ol>
+	  
+	  <div class="error">At this point, you should have retrieved the sequences corresponding to your coordinate (BED) file. 
+	  </div>
+	  
+	</div>         
+	
+      </div>         
+    </div>         
+    
+    
+    
+    <!-- PEAK-MOTIFS-->	     
+    
+    
+    <div class="demo">
+      <h2 id="quality" class="expand" >Discovering motifs from peak sequences</h2>
+      <div class="collapse">
+        <div class="notice">
+	  <b>Goal:</b>Discover binding motifs from a fasta file containing ChIP-seq determined binding regions of a transcription factor. 
+	</div>
+        <h3 class="expand" >1 - Getting to know peak-motifs</h3>
+        <div class="collapse">
+	  
+	  <i>peak-motifs</i> is a computational pipeline that discovers motifs in peak sequences, compares them with databases, exports putative binding sites for visualization in the UCSC genome browser and generates an extensive report. </br>
+	The following articles describe peak-motifs and its usage:
+	<ul>
+	  <li>Thomas-Chollier, M., Herrmann, C., Defrance, M., Sand, O., Thieffry, D. and van Helden, J. (2011).<i> RSAT peak-motifs: motif analysis in full-size ChIP-seq datasets</i> Nucleic Acids Research doi:10.1093/nar/gkr1104, 9.<a href="http://nar.oxfordjournals.org/content/40/4/e31.long"> [Paper] </a></li> 
+	  <li>Thomas-Chollier M, Darbo E, Herrmann C, Defrance M, Thieffry D, van Helden J. (2012). <i>A complete workflow for the analysis of full-size ChIP-seq (and similar) data sets using peak-motifs</i>. Nat Protoc 7(8): 1551-1568. <a href="http://www.nature.com/nprot/journal/v7/n8/full/nprot.2012.088.html"> [Paper]</a></li>
+	</ul>
+	In this section we will get familiar with this tool and its general usage.
+	
+	<ol>
+                <li> From the result page before, click on the button <b>peak-motifs</b> at the bottom of the page, to automatically transfer the sequences to this tool.
+                Note that peak-motifs is also accessible from the left menu, in the <b>NGS ChIP-seq</b></li>
+                <li>A new page appear, displaying a form.</li>
+                 <img class="bordered" src="images/3_RSAT.png" alt="3_RSAT" width="550"/>
+                <li>The default peak-motifs web form only displays the essential options. There are only two
+mandatory parameters.<br/>
+a. The title box, which you will set as <b>siGATA_ER_E2_r3</b></br>
+b. The sequences, that have been automatically passed from <b>fetch-sequences</b>. Alternatively, sequences can be pasted in the available box, input from a URL, and uploading a file from your computer. </li>
+ 
+ <li>We could launch the analysis like this, but we will now modify some of the advanced options in order to fine-tune the analysis according
+to your data set.	
+	<ul><li> Open the "Reduce peak sequences" title, and make sure the "Cut peak sequences: +/- " option is set to <b>0</b> (we wish to analyse our full dataset)</li>
+	<li>Open the “Motif Discovery parameters” title, and check the oligomer sizes 6 and 7 (but not 8). Check "Discover over-represented spaced word pairs [dyad-analysis]"</li>
+	 <img class="bordered" src="images/4_RSAT.png" alt="4_RSAT" width="550"/>
+	 <li>Under “Compare discovered motifs with databases”, we'll keep "JASPAR core vertebrates" as the studied organism is human.</li>
+     <li>Under “Locate motifs and export predicted sites as custom UCSC tracks”, select "Peak coordinates specified in fasta headers of the test sequence file (Galaxy format)".</li>
+	<img class="bordered" src="images/5_RSAT.png" alt="5_RSAT" width="550"/>
+	</ul>
+</li>
+
+                <li>You can indicate your email address in order to receive notification of the task submission and completion. This is particularly useful because the full analysis may take some time for very large datasets.</li>
+                
+                
+   				<li>Click “GO”. As soon as the query has been launched, you should receive an email indicating confirming the task submission, and providing a link to the future result page.</li>
+            
+   				
+   				<li>The Web page also displays a link, You can already click on this link. The report will be progressively updated during the processing of the workflow.</b></li>
+
+<div class="post">
+   				<div class="success"> Understanding the <b> peak-motifs</b> result report .<br/>
+                </div>
+            	<div class="collapse"> 
+            	
+                
+
+	<br/>
+	The <i>peak-motifs</i> output is formed by the following parts:
+	<ol>
+	  <li><b>Sequence Composition:</b>The distribution of sequence lengths provides a useful way to detect outlier peaks (i.e., exceptionally long peaks that may ‘dilute’ the motif signal) or irregular length distributions resulting from problems during the peak-calling procedure. Nucleotide and dinucleotide compositions are computed and displayed in the form of heat maps and positional profiles</li>
+	  <img class="bordered" src="images/6_peak-motifs.png" alt="PMSC3" width="550"/> 
+	  
+	  <li><b>Motif Discovery:</b>The workflow combines four word-based pattern-discovery algorithms that rely on two complementary criteria (overrepresentation and positional bias) to detect exceptional words (oligonucleotides) and spaced pairs of words (dyads). Significant words are used as seeds to build probabilistic description of motifs (position-specific scoring matrices), indicating residue variability at each position of the motif, represented as logos.</li>
+	  <img class="bordered" src="images/7_peak-motifs.png" alt="PMSC3" width="550"/> 
+	  
+	  <li><b>Motif comparisons:</b> Discovered motifs are compared with one or several public databases of annotated motifs to predict associated transcription factors. Results of this comparison are also displayed as multiple motif alignments (click on the link indicated in the red box) to highlight matches with several annotated motifs (e.g., factors belonging to the same family, composite motifs bound by protein complexes). Motif comparison is performed against vertebrate transcription factors binding motifs from <a href="http://jaspar.genereg.net/" target='_blank'>JASPAR database</a>. </li>
+	  <img class="bordered" src="images/8_peak-motifs.png" alt="PMSC3" width="550"/> 
+	  <img class="bordered" src="images/9_peak-motifs.png" alt="PMSC3" width="550"/> 
+	  <li><b>Binding site predictions:</b>Sequences are scanned with the discovered motifs to locate binding sites, and their positioning within peaks is analyzed (coverage, positional distribution along peaks).</li>
+	  <img class="bordered" src="images/10_peak-motifs.png" alt="PMSC3" width="550"/> 
+	  
+	</ol>
+	
+	To obtain an synthetic overview of the discovered motifs : 
+	<ol>
+	  <li>at the top of the report, in the gray box, click on <b>small summary</b></li>
+	  	  <img class="bordered" src="images/11_peak-motifs.png" alt="PMSC3" width="550"/> 
+
+	</ol>
+	</div>
+   				</div>
+	<div class="post">
+          <div class="success"><ul><li>Do we discover significant motifs ? </li>
+          <li>Are these motifs biologically relevant? In particular, did the program discover motifs related
+to ER or GATA3 ?</li>
+</ul>
+ </div>
+<div class="collapse"> 
+Pre-calculated results are available <a href="results/peak-motifs.2014-10-07.093009_2014-10-07.093009_rKpHEN/peak-motifs_synthesis.html" target="_blank">here</a>. 
+         
+          </div>
+
+	</div>
+      </div>
+      <h3 class="expand">2 - Differential analysis </h3>
+      <div class="collapse">
+      <p>As we have two conditions (siGATA, siNT), we would like to find if some motifs are found in one dataset, but not the other. We are thus going to perform differential motif analysis.</p>
+
+<ol>	
+	<li>Use <b>fetch-sequences</b> to obtain the peak sequences for siNT (you should already have the peak sequences for siGATA condition). Save the two sequence files on your computer, since we will need to upload both of them separately for the next step.
+<li>Run peak-motifs in differential analysis mode using siGATA (not treated) as <b>Peak sequences</b> and siNT as
+<b>control sequences</b>. Give as title : <b>siGATA_vs_siNT_r3</b></li>
+
+<div class="post">
+          <div class="success">Do you obtain different motifs than with the single peak set analysis?
+	             </div>	  
+	             <div class="collapse"> 
+	             Pre-calculated results are available <a href="results/peak-motifs.2014-10-07.150329_2014-10-07.150329_sPZtpE/peak-motifs_synthesis.html" target="_blank">here</a>. 
+			</div>
+	</div>
+
+<li>The swap datasets (siNT as test, and siGATA as control) result is available <a href="results/siNT_vs_siGATA_r3/peak-motifs_synthesis.html" target="_blank">here</a>.</li>
+
+<div class="post">
+          <div class="success">Do you find motifs ? How do they compare with the previous ones ? Compare the swaped dataset (siNT as test, and siGATA as control) : does it make sense ?
+	             </div>	  
+	</div>
+</ol>	 
+	
+
+	
+	
+      </div>
+      
+            <h3 class="expand">2 - Negative controls </h3>
+      <div class="collapse">
+      <p>As in experimental biology, we perform negative controls for motif analyses. RSAT has multiple options to create datasets that can serve as controls. Here, we will use "random genome fragments", to select random regions of the same number and size as the siGATA peak set.</p>
+
+<ol>	
+	<li>In the left RSAT menu, click on <b>build control sets</b> and choose <b>random genome fragments</b> </li>
+	<li>Use siGATA_vs_siNT_r3 <u>FASTA sequence file</u> as "template"</li>
+	<li>Choose Local RSAT Organism => <b> Homo Sapiens </b> </li>
+	<li>As output, choose <b>FASTA sequences</b> </li>
+	<li>Click "GO" to run the program. </li>
+	<li> Save the FASTA result on your machine</li>
+    <img class="bordered" src="images/13_UCSC.png" alt="PMSC3" width="550"/> 
+    <li> Run <b>peak-motifs</b> with this file as input, same options as above, title : <b>random-genome fragments-siGATA_template</b>.</li>
+
+<li>
+<div class="post">
+          <div class="success">Do you expect to find significant motifs? Do you obtain significant motifs?
+	             </div>	  
+	             <div class="collapse"> 
+	             Pre-calculated results are available <a href="results/random-genome-fragments/peak-motifs_synthesis.html" target="_blank">here</a>.
+			</div>
+	</div>
+
+</ol>	 
+	
+
+	
+	
+      </div>
+      
+      
+    </div>
+    
+</div>
+
+
+
+
+
+<!--Visualisation -->	
+
+<div class="demo">
+  <h2 id="mapping" class="expand">Visualizing the sites in the context of genome annotations</h2>
+  <div class="collapse">
+    <div class="notice">
+      <b>Goal:</b> Visualize the predicted binding sites with the discovered motifs in genomic context.
+      <br/>
+    </div>
+    <h3 class="expand">1 - Load predicted binding sites into UCSC browser </h3>
+    <div class="collapse">
+      <p>Peak-motifs can prepare the BED files to be directly visualized in UCSC browser (or IGV !).</p>
+      
+      <ol>
+      <li>At the bottom of the report, click on the UCSC icon in "Motif locations (sites)".</li>
+      <li>This will open UCSC browser, and load the tracks of the peaks (coordinates only, not the shape) + one track per found motif.</li>
+      <li>Search for the location chr7:75,680,888-75,681,629   (located on chr7).</li>
+      </ol>
+      <div class="post">
+          <div class="success">You should be able to see the location of the sites matching the discovered motifs within the peaks.
+	             </div>	  
+	             <div class="collapse"> 
+<img class="bordered" src="images/12_UCSC.png" alt="PMSC3" width="550"/>         
+          </div>
+
+	</div>
+     </div>
+
+    </div>
+    
+  </div>
+</div>
+
+
+
+
+		</div>
+		
+	</div>
+</div>
+	
+<!-- SIDE BAR -->		
+
+		<div class="right sidebar" id="sidebar">
+		
+			<h5>Formateurs</h5>
+			<ul>
+			<li><a href="http://biologie.univ-mrs.fr/carlherrmann/home.html" target="_blank">Carl Herrmann</a></li>	
+			<li><a href="https://www.researchgate.net/profile/Matthieu_Defrance" target="_blank">Matthieu Defrance</a></li>
+			<li><a href="http://tagc.univ-mrs.fr/tagc/index.php/research/network-bioinformatics/dputhier" target="_blank">Denis Puthier</a></li>
+			<li><a href="http://morgane.bardiaux.fr" target="_blank">Morgane Thomas-Chollier</a></li>
+			</ul>
+			<p/>
+			<h5>Jeux de données</h5>
+			<ul>
+			<li>Theodorou V, Stark R, Menon S, Carroll JS <i>GATA3 acts upstream of FOXA1 in mediating ESR1 binding by shaping enhancer accessibility.</i> Genome Research, 23(1):12-22. 2013 <a href="http://www.ncbi.nlm.nih.gov/pubmed/23172872" target='_blank'>[Pubmed]</a>
+				<a href="http://genome.cshlp.org/content/23/1/12.long" target='_blank'> [Article] </a><br/>
+				<u>données et accession:</u><a href="../../html/datasets.html"> Liste complète</a><br/>
+				</li>	
+			</ul>
+			<h5>Liste des outils</h5>
+			<ul>
+			<li><a target="_blank" href="http://roscoff.rsat.fr">RSAT (Roscoff)</a></li>
+		   <li><a target="_blank" href="http://139.124.66.4/rsat/">RSAT (Marseille)</a></li>
+
+			</ul>
+			<a target="_blank" href="http://ecole-bioinfo-aviesan.sb-roscoff.fr/">
+			<h5>Ecole de Bioinformatique Aviesan</h5></a>
+			 <a target="_blank" href="http://www.aviesan.fr/"><img border="0" width="120" alt="AVIESAN" src="../../html/img/aviesan_logo_0.png"></a>
+
+			
+
+		</div>
+
+		<div class="clearer">&nbsp;</div>
+
+	</div>
+
+	<div id="footer">
+
+		<div class="left" id="footer-left">
+			
+		
+			
+			<p>&copy; 2014 Morgane Thomas-Chollier. All rights Reserved</p>
+
+			<p class="quiet"><a href="http://templates.arcsin.se/">Website template</a> by <a href="http://arcsin.se/">Arcsin</a></p>
+			
+			<div class="clearer">&nbsp;</div>
+
+		</div>
+
+		<div class="right" id="footer-right">
+
+		</div>
+
+		<div class="clearer">&nbsp;</div>
+
+	</div>
+
+</div>
+
+</body>
+</html>
