@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+	<meta name="description" content=""/>
+	<meta name="keywords" content="" />
+	<meta name="author" content="carl" />
+	<title>Workshop: ChIP-Seq Data Analysis</title>
+	<link rel="stylesheet" type="text/css" href="html/style.css" media="screen" />
+<style type="text/css">
+
+#wrapper{
+  margin:0 auto;
+  #padding:15px 15% 8em;
+  text-align:left
+}
+#content {
+  max-width:70em;
+  width:100%;
+  margin:0 auto;
+  padding-bottom:20px;
+  overflow:hidden
+}
+.demo {
+  margin:1.5em 0;
+  padding:1.5em 1.5em 0.75em;
+  border:1px solid #ccc;
+  position:relative;
+  overflow:hidden
+}
+
+.post {
+  position:relative;
+  overflow:hidden
+}
+.collapse p {padding:0 10px 1em}
+
+.switch {position:absolute; top:1.5em; right: 1.5em; padding:3px}
+
+#.post .switch {position:static; text-align:right}
+
+.post .main{margin-bottom:0; padding-bottom:0}
+
+.other li, .summary {margin-bottom:.3em; padding:1em; border:1px solid #e8e7e8; background-color:#f8f7f8}
+
+.other ul {list-style-type:none; text-align:center}
+
+
+.expand{padding-bottom:.75em}
+
+/* --- Links  --- */
+
+#download {
+  border-style:none;
+  background:white;
+}
+
+.expand a {
+  display:block;
+  padding:3px 10px
+}
+.expand a:link, .expand a:visited {
+  border-width:1px;
+  background-image:url(img/arrow-down.gif);
+  background-repeat:no-repeat;
+  background-position:98% 50%;
+}
+.expand a:hover, .expand a:active, .expand a:focus {
+}
+.expand a.open:link, .expand a.open:visited {
+  #border-style:solid;
+  #background:#eee url(img/arrow-up.gif) no-repeat 98% 50%
+  color:black;
+}
+</style>
+<!--[if lte IE 6]>
+<style type="text/css">
+h3 a, .demo {position:relative; height:1%}
+</style>
+<![endif]-->
+
+<!--[if lte IE 6]>
+<script type="text/javascript">
+   try { document.execCommand( "BackgroundImageCache", false, true); } catch(e) {};
+</script>
+<![endif]-->
+<!--[if !lt IE 6]><!-->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="scripts/expand.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+$(function() {
+    $("#content h3.expand").toggler();
+    $("#content h2.expand").toggler();
+    $("#content div.demo").expandAll({trigger: "h3.expand", ref: "h3.expand"});
+    $("#content div.other").expandAll({
+      expTxt : "[Show]", 
+      cllpsTxt : "[Hide]",
+      ref : "ul.collapse",
+      showMethod : "show",
+      hideMethod : "hide"
+    });
+    $("#content div.post").expandAll({
+      expTxt : "[Show tip]", 
+      cllpsTxt : "[Hide tip]",
+      ref : "div.collapse", 
+      localLinks: "p.top a"    
+    });    
+});
+//--><!]]>
+</script>
+<!--<![endif]-->
+</head>
+
+<body>
+
+<div id="site-wrapper">
+
+	<div id="header">
+
+		<div id="top">
+
+			<div class="left" id="logo">
+								
+<a href="#"><h2 class="label label-green">Workshop: ChIP-Seq Data Analysis</h2></a>
+			</div>
+
+			<div class="clearer">&nbsp;</div>
+
+		</div>
+
+		<div class="navigation" id="sub-nav">
+
+			<ul class="tabbed">
+				<li class="current-tab"><a href="index.html">Home</a></li>
+				<li ><a href="tutorial/01_peak_calling/peak_calling_tutorial.html">Session1:Peak calling</a></li>
+				<li><a href="tutorial/02_annotation/annotation.html">Session2:Annotation Fonctionelle</a></li>
+				<li><a href="tutorial/04_motif/motif_tutorial.html">Session3: Analyse de motifs</a></li>
+			</ul>
+
+			<div class="clearer">&nbsp;</div>
+
+			<div class="clearer">&nbsp;</div>
+
+		</div>
+
+	</div>
+
+	<div class="main" id="main-two-columns">
+
+		<div class="left" id="main-content">
+
+			<h2 id="contents"> Atelier ChIP-seq </h2>
+			
+			<p/>
+			
+
+ <h4>Contexte</h4>
+ 
+ Cet atelier a lieu dans le cadre de <a target="_blank" href="http://ecole-bioinfo-aviesan.sb-roscoff.fr/">l'Ecole de bioinformatique AVIESAN 2015, Station Biologique, Roscoff </a>.
+
+<p/>
+<!-- <h4>Flowchart général des étapes</h4>
+ 
+ <img class="bordered" src="tableau.jpg" alt="tableau" width="550"/> 
+-->
+
+</p>
+ <h4>Organisation</h4>
+
+ 
+     <table>
+
+      <tr>
+		<th>Session</th>
+		<th>Date</th>
+		<th>De</th>
+		<th>A</th>
+		<th>Titre</th>
+		<th>Aspects théoriques (diapos)</th>
+		<th>Travaux pratiques</th>
+      </tr>
+
+
+
+      <tr>
+		<td>1</td>
+		<td>Mardi 29/09</td>
+		<td>08:30</td>
+		<td>12:30</td>
+		<td>ChIP-seq : qualité, normalisation et peak-calling.
+		<ul><li><a href="slides/chipseq_CarlHerrmann_Roscoff2015.odp">Diapos (.odp)</a></li>
+		  <li><a href="slides/chipseq_CarlHerrmann_Roscoff2015.pdf">Diapos (.pdf)</a></li>
+		</ul>
+		</td>
+		<td>
+		  <ol>
+			<li>Qualité et normalization des données de ChIP-seq</li>
+			<li>Introduction sur le peak-calling</li>
+			<li>Diversité des approches</li>
+			<li>les outils MACS et SICER</li>
+			<li>Analyse différentielle</i>
+</ol>
+</td>
+<td>
+
+  <ol>
+<!--	<li><a href="tutorial/00_read_mapping/mapping_tutorial.html">Alignement des reads, quality check</a> Etapes préalablement suivies pour obtenir les fichiers BAM (reads alignés). Pour des raisons de temps, nous ne pouvons pas faire des étapes lors de l'atelier. Nous encourageons les participants à suivre ce tutorial de manière autonome.</li>	-->
+	<li><a href="tutorial/01_peak_calling/peak_calling_tutorial.html">Tutoriel peak Calling</a>: Visualisation des signaux, création de fichiers type 'BigWig' avec correction par l'input, peak calling avec MACS, comparaison de réplicats biologiques.</li>
+  </ul>
+</td>
+</tr>
+
+
+
+<tr>
+  <td>2</td>
+  <td>Mardi 29/09</td>
+  <td>14:15</td>
+  <td>15:40</td>
+  <td>Annotation, visualisation et intégration de données ChIP-seq. <ul><li><a href="slides/ChIP-seq_annotation_MD_2015.pdf">Diapos (.pdf)</a></li></ul>
+  </td>
+  <td>
+	<ol>
+	  <li>Annotation génomique (gènes les plus proches, profil autour du TSS)</li>
+	  <li>Annotation fonctionnelle (enrichissement en termes fonctionnels, GREAT)</li>
+	  <!--<li>Intégration de données (lien ChIP-seq / RNA-seq, MedIP-seq, …)</li>-->
+	</ol>
+  </td>
+  <td>
+  
+	<ol>
+	<li><a href="tutorial/02_annotation/annotation.html">Tutorial [HTML]</a></li>
+	<ol>
+	<li>Visualisation de l’enrichissement</li>
+	<li>Gènes associés aux peaks</li>
+	<li>Enrichissement en termes fonctionnels (GREAT)</li>
+	  </ol>
+	</ol>
+  </td>
+</tr>
+
+
+<tr>
+  <td>3</td>
+  <td>Mardi 29/09</td>
+  <td>16:15</td>
+  <td>17:30</td>
+  <td>Détection de motifs dans les pics</td>
+  <td>
+	<ol>
+	  <li>Découverte de motifs</li>
+	  <li>Comparing discovered motifs with transcription factor databases.</li>
+	  <li>Predicting binding sites</li>
+	</ol>
+  </td>
+  <td>
+	<ol>
+	  <li><a href="tutorial/04_motif/motif_tutorial.html">Analyse de motifs dans les pics de ChIP-seq</a></li>
+	</ol>
+  </td>
+</tr>
+
+
+</table>
+ 
+  <h4>Formateurs</h4>
+    <ol>
+      <li><a target="_blank" href="http://ibios.dkfz.de/tbi/index.php/cancer-regulatory-genomics/research">Carl Herrmann</a><sup>1</sup></li>
+      <li><a target="_blank" href="http://www.bigre.ulb.ac.be/Users/defrance/">Matthieu Defrance</a><sup>2</sup></li>
+      <li><a target="_blank" href="http://tagc.univ-mrs.fr/tagc/index.php/research/network-bioinformatics/dputhier">Denis Puthier</a><sup>3</sup></li>
+      <li><a target="_blank" href="mailto:mthomas@biologie.ens.fr">Morgane Thomas-Chollier</a><sup>4</sup></li>
+      <li><a target="_blank" href="http://ibios.dkfz.de/tbi/index.php/cancer-regulatory-genomics/research">Stéphanie Le Gras</a><sup>5</sup></li>
+      <li><a target="_blank" href="http://ibios.dkfz.de/tbi/index.php/cancer-regulatory-genomics/research">Jacques van Helden</a><sup>3</sup></li>      
+
+	  <!--      <li><a target="_blank" href="mailto:olivier.sand@good.ibl.fr">Olivier Sand</a><sup></sup></li>    
+				<li><a target="_blank" href="http://jacques.van-helden.perso.luminy.univmed.fr/">Jacques van Helden</a><sup>1</sup></li> -->
+    </ol>
+
+    <ul>    
+      <ol>
+
+		<p><li>Cancer Regulatory Genomics group, Division of Theoretical Bioinformatics, DKFZ and IPMB, Universität Heidelberg, 
+			<br>Web: <a target="_blank" href="http://ibios.dkfz.de/tbi/index.php/cancer-regulatory-genomics/research">website</a>
+			<br>Build. TP3 - DKFZ Heidelberg (B080) Im Neuenheimer Feld 580 D-69120 Heidelberg.
+		</li></p>
+
+		<p><li> Laboratory of cancer epigenetics
+			<br>Université; Libre de Bruxelles
+			<br>Facult&eacute; de M&eacute;decine CP614. Route de Lennik, 808. 1070 Bruxelles, Belgium
+		</li></p>
+
+		<p><li>Lab. Technological Advances for Genomics and Clinics (TAGC)
+			<br>Web: <a target="_blank" href="http://tagc.univ-mrs.fr/tagc/">website</a>
+			<br>Aix-Marseille Universit&eacute; (AMU).
+			<br>INSERM Unit U1090, 163, Avenue de Luminy, 13288 MARSEILLE cedex 09. France
+		</li></p>
+		<p><li>
+			CSB group, Institut de Biologie de l'&Eacute;cole Normale Sup&eacute;rieure
+			<br>Institut de Biologie de l'&Eacute;cole Normale Sup&eacute;rieure, 46 rue d'Ulm F-75230 Paris cedex 05 . France
+			<br>Web: <a target='_blank' href='http://www.biologie.ens.fr/csb/'>website</a>
+		</li></p>
+		<p><li>
+			Institut de G&eacute;n&eacute;tique et de Biologie Mol&eacute;culaire (IGBMC).
+			<br>IGBMC, 1 rue Laurent Fries BP 10142 67404 Illkirch CEDEX
+			<br>Web: <a target='_blank' href="http://www.igbmc.fr/technologies/5/team/54/"</a>
+		</li></p>
+
+</ol>
+    </ul>
+
+
+</div>	    	    	
+	
+<!-- SIDE BAR -->		
+
+		<div class="right sidebar" id="sidebar">
+		
+			<h5>Formateurs</h5>
+			<ul>
+			<li><a href="http://biologie.univ-mrs.fr/carlherrmann/home.html" target="_blank">Carl Herrmann</a></li>	
+			<li><a href="https://www.researchgate.net/profile/Matthieu_Defrance" target="_blank">Matthieu Defrance</a></li>
+			<li><a href="http://tagc.univ-mrs.fr/tagc/index.php/research/network-bioinformatics/dputhier" target="_blank">Denis Puthier</a></li>
+			<li><a href="http://morgane.bardiaux.fr" target="_blank">Morgane Thomas-Chollier</a></li>
+			<li><a href="http://morgane.bardiaux.fr" target="_blank">Stephanie Le Gras</a></li>
+			<li><a href="http://morgane.bardiaux.fr" target="_blank">Jacques van Helden</a></li>
+
+			</ul>
+			<p/>
+			<h5>Jeux de données</h5>
+			<ul>
+			<li>Theodorou V, Stark R, Menon S, Carroll JS <i>GATA3 acts upstream of FOXA1 in mediating ESR1 binding by shaping enhancer accessibility.</i> Genome Research, 23(1):12-22. 2013 <a href="http://www.ncbi.nlm.nih.gov/pubmed/23172872" target='_blank'>[Pubmed]</a>
+				<a href="http://genome.cshlp.org/content/23/1/12.long" target='_blank'> [Article] </a><br/>
+				<u>données et accession:</u><a href="html/datasets.html"> Liste complète</a><br/>
+				</li>	
+			</ul>
+			<h5>Liste des outils</h5>
+			<ul>			
+			<li><a target="_blank" href="http://samtools.sourceforge.net/">Samtools</a></li>
+			<li><a target="_blank" href="https://github.com/fidelram/deepTools">DeepTools</a></li>
+			<li><a target="_blank" href="http://www.broadinstitute.org/igv/">IGV</a></li>
+			<li><a target="_blank" href="http://liulab.dfci.harvard.edu/MACS/">MACS </a></li>
+			<li><a target="_blank" href="https://github.com/taoliu/MACS/">MACS2</a></li>
+			<li><a target="_blank" href="http://bedtools.readthedocs.org/en/latest/content/tools/intersect.html">IntersectBed (bedtools) </a></li>
+		
+		<li><a target="_blank" href="http://www.bioconductor.org/packages/release/bioc/html/DiffBind.html">diffBind </a></li>
+		
+		
+		<li><a target="_blank" href="https://genome.ucsc.edu/">UCSC Genome Browser</a></li>
+		
+		<li><a target="_blank" href="http://roscoff.rsat.fr">RSAT (Roscoff)</a></li>
+		<li><a target="_blank" href="http://139.124.66.4/rsat/">RSAT (Marseille)</a></li>
+		<li><a target="_blank" href="http://tagc.univ-mrs.fr/remap/">ReMAP</a></li>	
+		<li><a target="_blank" href="http://nebula.curie.fr/">Nebula makeTSSDist,AnnotatePeaks</a></li>	
+		<li><a target="_blank" href="http://great.stanford.edu"> GREAT </a></li>
+			<li><a href="http://www.ebi.ac.uk/research/bertone/software" target="_blank">PeakSplitter</a></li>
+			</ul>
+			<a target="_blank" href="http://ecole-bioinfo-aviesan.sb-roscoff.fr/">
+			<h5>Ecole de Bioinformatique Aviesan</h5></a>
+			 <a target="_blank" href="http://www.aviesan.fr/"><img border="0" width="120" alt="AVIESAN" src="html/img/aviesan_logo_0.png"></a>
+
+			
+
+		</div>
+
+		<div class="clearer">&nbsp;</div>
+
+	</div>
+
+	<div id="footer">
+
+		<div class="left" id="footer-left">
+			
+		
+			
+			<p>&copy; 2015 Morgane Thomas-Chollier. All rights Reserved</p>
+
+			<p class="quiet"><a href="http://templates.arcsin.se/">Website template</a> by <a href="http://arcsin.se/">Arcsin</a></p>
+			
+			<div class="clearer">&nbsp;</div>
+
+		</div>
+
+		<div class="right" id="footer-right">
+
+		</div>
+
+		<div class="clearer">&nbsp;</div>
+
+	</div>
+
+</div>
+
+</body>
+</html>
